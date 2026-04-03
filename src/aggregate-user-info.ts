@@ -30,6 +30,8 @@ const compare = (num1: number, num2: number): number => {
 
 export const aggregateUserInfo = (
     response: client.ResponseType,
+    languageMode: type.LanguageMode = 'primary',
+    excludeLanguages: string[] = [],
 ): type.UserInfo => {
     if (!response.data) {
         if (response.errors && response.errors.length) {
@@ -50,27 +52,61 @@ export const aggregateUserInfo = (
             date: new Date(week.date),
         }));
     const contributesLanguage: { [language: string]: type.LangInfo } = {};
-    user.contributionsCollection.commitContributionsByRepository
-        .filter((repo) => repo.repository.primaryLanguage)
-        .forEach((repo) => {
-            const language = repo.repository.primaryLanguage?.name || '';
-            const color = repo.repository.primaryLanguage?.color || OTHER_COLOR;
+    user.contributionsCollection.commitContributionsByRepository.forEach(
+        (repo) => {
             const contributions = repo.contributions.totalCount;
 
-            const info = contributesLanguage[language];
-            if (info) {
-                info.contributions += contributions;
-            } else {
-                contributesLanguage[language] = {
-                    language: language,
-                    color: color,
-                    contributions: contributions,
-                };
+            if (
+                languageMode === 'breakdown' &&
+                repo.repository.languages &&
+                repo.repository.languages.edges.length > 0
+            ) {
+                const edges = repo.repository.languages.edges;
+                const totalSize = edges.reduce(
+                    (sum, edge) => sum + edge.size,
+                    0,
+                );
+                edges.forEach((edge) => {
+                    const ratio = edge.size / totalSize;
+                    const language = edge.node.name;
+                    const color = edge.node.color || OTHER_COLOR;
+                    const langContrib = contributions * ratio;
+
+                    const info = contributesLanguage[language];
+                    if (info) {
+                        info.contributions += langContrib;
+                    } else {
+                        contributesLanguage[language] = {
+                            language: language,
+                            color: color,
+                            contributions: langContrib,
+                        };
+                    }
+                });
+            } else if (repo.repository.primaryLanguage) {
+                const language = repo.repository.primaryLanguage.name;
+                const color =
+                    repo.repository.primaryLanguage.color || OTHER_COLOR;
+
+                const info = contributesLanguage[language];
+                if (info) {
+                    info.contributions += contributions;
+                } else {
+                    contributesLanguage[language] = {
+                        language: language,
+                        color: color,
+                        contributions: contributions,
+                    };
+                }
             }
-        });
+        },
+    );
+    const excludeSet = new Set(excludeLanguages.map((l) => l.toLowerCase()));
     const languages: Array<type.LangInfo> = Object.values(
         contributesLanguage,
-    ).sort((obj1, obj2) => -compare(obj1.contributions, obj2.contributions));
+    )
+        .filter((lang) => !excludeSet.has(lang.language.toLowerCase()))
+        .sort((obj1, obj2) => -compare(obj1.contributions, obj2.contributions));
 
     const totalForkCount = user.repositories.nodes
         .map((node) => node.forkCount)

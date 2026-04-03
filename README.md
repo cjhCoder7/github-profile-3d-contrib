@@ -98,6 +98,9 @@ In the sample, only `GITHUB_TOKEN` and `USERNAME` are specified as environment v
 - `SETTING_JSON` : (optional) settings json file path. See `sample-settings/*.json` and `src/type.ts` in `yoshi389111/github-profile-3d-contrib` repository for details. - since ver. 0.6.0
 - `GITHUB_ENDPOINT` : (optional) Github GraphQL endpoint. For example, if you want to create a contribution calendar based on your company's GitHub Enterprise activity instead of GitHub.com, set this environment variable. e.g. `https://github.mycompany.com/api/graphql` - since ver. 0.8.0
 - `YEAR` : (optional) For past calendars, specify the year. This is intended to be specified when running the tool from the command line. - since ver. 0.8.0
+- `LANGUAGE_MODE` : (optional) Language statistics mode. `primary` (default) counts only the primary language of each repository. `breakdown` breaks down contributions proportionally across all languages used.
+- `EXCLUDE_LANGUAGES` : (optional) Comma-separated list of languages to exclude from the pie chart. e.g. `HTML,CSS`
+- `TOP_LANGUAGES` : (optional) Number of top languages to display in the pie chart, default 5, range 1–9. When set to more than 5, the legend automatically switches to a 2-column layout.
 
 #### About `GITHUB_TOKEN`
 

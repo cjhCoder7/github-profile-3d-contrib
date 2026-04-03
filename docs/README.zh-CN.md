@@ -96,6 +96,9 @@ jobs:
 - `SETTING_JSON` : （可选）设置 json 文件路径。详情请参见仓库中的 `sample-settings/*.json` 和 `src/type.ts`。- 自 v0.6.0 起
 - `GITHUB_ENDPOINT` : （可选）Github GraphQL 端点。例如，如果您希望基于公司 GitHub Enterprise 活动而不是 GitHub.com 创建贡献日历，请设置此环境变量。例如：`https://github.mycompany.com/api/graphql` - 自 v0.8.0 起
 - `YEAR` : （可选）如需生成往年日历，请指定年份。此项主要用于命令行运行工具时指定。- 自 v0.8.0 起
+- `LANGUAGE_MODE` : （可选）语言统计模式。`primary`（默认）仅统计每个仓库的主要语言。`breakdown` 按比例将贡献分配到所有使用的语言。
+- `EXCLUDE_LANGUAGES` : （可选）从饼图中排除的语言列表，以逗号分隔。例如：`HTML,CSS`
+- `TOP_LANGUAGES` : （可选）饼图中显示的语言数量，默认 5，范围 1–9。设置超过 5 时，图例自动切换为双列布局。
 
 #### 关于 `GITHUB_TOKEN`
 

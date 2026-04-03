@@ -13,12 +13,13 @@ export const createPieLanguage = (
     height: number,
     settings: type.PieLangSettings,
     isForcedAnimation: boolean,
+    topLanguages: number = 5,
 ): void => {
     if (userInfo.totalContributions === 0) {
         return;
     }
 
-    const languages = userInfo.contributesLanguage.slice(0, 5);
+    const languages = userInfo.contributesLanguage.slice(0, topLanguages);
     const sumContrib = languages
         .map((lang) => lang.contributions)
         .reduce((a, b) => a + b, 0);
@@ -43,8 +44,13 @@ export const createPieLanguage = (
     const margin = radius / 10;
 
     const row = 8;
-    const offset = (row - languages.length) / 2 + 0.5;
     const fontSize = height / row / 1.5;
+    const useColumns = languages.length > 5;
+    const columnCount = useColumns ? 5 : languages.length;
+    const offset = (row - columnCount) / 2 + 0.5;
+    const columnWidth = useColumns
+        ? (width - radius * 2.1) / 2
+        : 0;
 
     const pie = d3
         .pie<type.LangInfo>()
@@ -58,14 +64,21 @@ export const createPieLanguage = (
         .append('g')
         .attr('transform', `translate(${radius * 2.1}, ${0})`);
 
+    const markerX = (index: number) =>
+        useColumns ? Math.floor(index / 5) * columnWidth : 0;
+    const labelX = (index: number) =>
+        markerX(index) + fontSize * 1.2;
+    const itemY = (index: number) =>
+        ((useColumns ? index % 5 : index) + offset) * (height / row);
+
     // markers for label
     const markers = groupLabel
         .selectAll(null)
         .data(pieData)
         .enter()
         .append('rect')
-        .attr('x', 0)
-        .attr('y', (d) => (d.index + offset) * (height / row) - fontSize / 2)
+        .attr('x', (d) => markerX(d.index))
+        .attr('y', (d) => itemY(d.index) - fontSize / 2)
         .attr('width', fontSize)
         .attr('height', fontSize)
         .attr('fill', (d) => d.data.color)
@@ -88,8 +101,8 @@ export const createPieLanguage = (
         .append('text')
         .attr('dominant-baseline', 'middle')
         .text((d) => d.data.language)
-        .attr('x', fontSize * 1.2)
-        .attr('y', (d) => (d.index + offset) * (height / row))
+        .attr('x', (d) => labelX(d.index))
+        .attr('y', (d) => itemY(d.index))
         .attr('class', 'fill-fg')
         .attr('font-size', `${fontSize}px`);
     if (isAnimate) {
@@ -120,7 +133,7 @@ export const createPieLanguage = (
         .attr('stroke-width', '2px');
     paths
         .append('title')
-        .text((d) => `${d.data.language} ${d.data.contributions}`);
+        .text((d) => `${d.data.language} ${Math.round(d.data.contributions)}`);
     if (isAnimate) {
         paths
             .append('animate')

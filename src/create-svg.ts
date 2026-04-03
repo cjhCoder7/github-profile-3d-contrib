@@ -21,6 +21,7 @@ export const createSvg = (
     userInfo: type.UserInfo,
     settings: type.Settings,
     isForcedAnimation: boolean,
+    topLanguages: number = 5,
 ): string => {
     let svgWidth = width;
     let svgHeight = height;
@@ -71,6 +72,7 @@ export const createSvg = (
             pieHeight,
             settings,
             isForcedAnimation,
+            topLanguages,
         );
     } else if (settings.type === 'radar_contrib_only') {
         // radar chart only
@@ -119,6 +121,7 @@ export const createSvg = (
             pieHeight,
             settings,
             isForcedAnimation,
+            topLanguages,
         );
 
         const group = svg.append('g');

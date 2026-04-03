@@ -177,3 +177,5 @@ export type Settings =
     | RadarContribOnlySettings;
 
 export type SettingFile = Settings | Settings[];
+
+export type LanguageMode = 'primary' | 'breakdown';

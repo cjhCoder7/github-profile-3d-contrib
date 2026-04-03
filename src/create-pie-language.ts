@@ -4,19 +4,6 @@ import * as type from './type';
 const OTHER_NAME = 'other';
 const OTHER_COLOR = '#444444';
 
-const LANGUAGE_COLORS = [
-    '#845ec2',
-    '#d65db1',
-    '#ff6f91',
-    '#ff9671',
-    '#ffc75f',
-    '#f9f871',
-    '#fbeaff',
-    '#b39cd0',
-    '#4ffbdf',
-    '#009efa',
-];
-
 export const createPieLanguage = (
     svg: d3.Selection<SVGSVGElement, unknown, null, unknown>,
     userInfo: type.UserInfo,
@@ -47,13 +34,6 @@ export const createPieLanguage = (
             contributions: otherContributions,
         });
     }
-
-    // apply custom color palette to languages (except "other")
-    languages.forEach((lang, i) => {
-        if (lang.language !== OTHER_NAME && i < LANGUAGE_COLORS.length) {
-            lang.color = LANGUAGE_COLORS[i];
-        }
-    });
 
     const isAnimate = settings.growingAnimation || isForcedAnimation;
     const animeSteps = 5;

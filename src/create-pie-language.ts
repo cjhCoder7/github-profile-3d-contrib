@@ -36,7 +36,10 @@ export const createPieLanguage = (
     const sumContrib = languages
         .map((lang) => lang.contributions)
         .reduce((a, b) => a + b, 0);
-    const otherContributions = userInfo.totalCommitContributions - sumContrib;
+    const allLangContrib = userInfo.contributesLanguage
+        .map((lang) => lang.contributions)
+        .reduce((a, b) => a + b, 0);
+    const otherContributions = allLangContrib - sumContrib;
     if (0 < otherContributions) {
         languages.push({
             language: OTHER_NAME,

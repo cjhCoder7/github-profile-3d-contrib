@@ -12,7 +12,7 @@ const height = 850;
 
 const pieHeight = 200 * 1.3;
 const pieWidthDefault = pieHeight * 2;
-const pieWidthWide = pieHeight * 2.5;
+const pieWidthWide = pieHeight * 2.2;
 
 const radarWidth = 400 * 1.3;
 const radarHeight = (radarWidth * 3) / 4;

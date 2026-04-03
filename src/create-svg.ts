@@ -11,7 +11,8 @@ const width = 1280;
 const height = 850;
 
 const pieHeight = 200 * 1.3;
-const pieWidth = pieHeight * 2;
+const pieWidthDefault = pieHeight * 2;
+const pieWidthWide = pieHeight * 2.5;
 
 const radarWidth = 400 * 1.3;
 const radarHeight = (radarWidth * 3) / 4;
@@ -23,6 +24,8 @@ export const createSvg = (
     isForcedAnimation: boolean,
     topLanguages: number = 5,
 ): string => {
+    const pieWidth = topLanguages > 5 ? pieWidthWide : pieWidthDefault;
+
     let svgWidth = width;
     let svgHeight = height;
     if (settings.type === 'pie_lang_only') {
